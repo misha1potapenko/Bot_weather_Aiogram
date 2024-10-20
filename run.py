@@ -1,9 +1,9 @@
 import asyncio
 
 import aiogram
-import  logging
+import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 from config import TOKEN
@@ -20,6 +20,11 @@ async def cmd_start(message: Message):
 @dp.message(Command('help'))
 async def get_help(message: Message):
     await message.answer("Напиши еще раз название города, если не работает, я сломался((((")
+
+
+@dp.message(F.text == 'Как дела')
+async def how_are_you(message: Message):
+    await message.answer("Ok")
 
 
 async def main():
