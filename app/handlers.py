@@ -73,10 +73,16 @@ async def get_town_save(message: Message, state: FSMContext):
     time_precipitation = None
     list_precipitation = []
     pressure_list = []
+    visibility_list = []
     for i in range(24):
         pressure = weather_data['hourly']['pressure_msl'][i]
         pressure_list.append(pressure)
-
+    for i in range(24):
+        visibility = weather_data['hourly']['visibility'][i]
+        if visibility <= 1000:
+            time_visibility = weather_data['hourly']['time'][i]
+            visibility_list.append(time_visibility[-5:])
+            visibility_list.append(visibility)
     for i in range(24):
         if max_temperature < weather_data['hourly']['temperature_2m'][i]:
             max_temperature = weather_data['hourly']['temperature_2m'][i]
@@ -101,7 +107,8 @@ async def get_town_save(message: Message, state: FSMContext):
         string_precipitation_small = (f"Осадки не ожидаются\n")
     string_weather = (f"Сегодня температура днем: {max_temperature}\n"
                       f"Температура утром (минимальная): {min_temperature}\n"
-                      f"Давление {pressure_list} ")
+                      f"Давление в эти сутки по часам: {pressure_list}\n"
+                      f"Видимость {visibility_list} ")
 
     list_weather.append(string_weather)
     list_weather.append(string_precipitation_small)
@@ -156,7 +163,7 @@ async def get_town_save(message: Message, state: FSMContext):
     # bot.send_message(message.from_user.id, finish_string_tm)
     await state.clear()
     list_precipitation = []
-
+    visibility_list = []
 
 @router.message(Town.name_town)
 async def get_town_save(message: Message, state: FSMContext):
@@ -188,7 +195,8 @@ async def get_town_save(message: Message, state: FSMContext):
     for i in range(24):
         if precipitation < weather_data['hourly']['precipitation'][i]:
             precipitation = weather_data['hourly']['precipitation'][i]
-            time_precipitation = weather_data['hourly']['time'][i]
+            if time_precipitation is None:
+                time_precipitation = weather_data['hourly']['time'][i]
     if precipitation > 0:
         if precipitation <= 0.5:
             string_precipitation_small = (f"🌦️Ожидаются незначительные осадки")
@@ -220,7 +228,8 @@ async def get_town_save(message: Message, state: FSMContext):
     for i in range(24, 48):
         if precipitation < weather_data['hourly']['precipitation'][i]:
             precipitation = weather_data['hourly']['precipitation'][i]
-            time_precipitation = weather_data['hourly']['time'][i]
+            if time_precipitation is None:
+                time_precipitation = weather_data['hourly']['time'][i]
             # list_weather_tm.append(f'Осадки начнуться примерно в {time_precipitation[-5:]}')
     if precipitation > 0:
         if precipitation <= 0.5:
@@ -277,7 +286,8 @@ async def how_are_you(message: Message, state: FSMContext):
     for i in range(24):
         if precipitation < weather_data['hourly']['precipitation'][i]:
             precipitation = weather_data['hourly']['precipitation'][i]
-            time_precipitation = weather_data['hourly']['time'][i]
+            if time_precipitation is None:
+                time_precipitation = weather_data['hourly']['time'][i]
     if precipitation > 0:
         if precipitation <= 0.5:
             string_precipitation_small = (f"🌦️Ожидаются незначительные осадки")
@@ -309,7 +319,8 @@ async def how_are_you(message: Message, state: FSMContext):
     for i in range(24, 48):
         if precipitation < weather_data['hourly']['precipitation'][i]:
             precipitation = weather_data['hourly']['precipitation'][i]
-            time_precipitation = weather_data['hourly']['time'][i]
+            if time_precipitation is None:
+                time_precipitation = weather_data['hourly']['time'][i]
             # list_weather_tm.append(f'Осадки начнуться примерно в {time_precipitation[-5:]}')
     if precipitation > 0:
         if precipitation <= 0.5:
